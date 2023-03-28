@@ -1,7 +1,8 @@
-package com.gy25m.tpkkosearchapp
+package com.gy25m.tpkkosearchapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.gy25m.tpkkosearchapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
