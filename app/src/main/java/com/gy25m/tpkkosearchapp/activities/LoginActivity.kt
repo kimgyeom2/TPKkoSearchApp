@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
 
     }//oncreate
     private fun clickLoginKakao(){
+        //firebase이용 예정
 
     }
     private fun clickLoginGoogle(){

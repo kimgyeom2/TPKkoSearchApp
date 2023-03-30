@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "393714458673",
+    "project_id": "tpkkoplacesearchgy25m",
+    "storage_bucket": "tpkkoplacesearchgy25m.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393714458673:android:0503377d0e04344a2df510",
+        "android_client_info": {
+          "package_name": "com.gy25m.tpkkosearchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393714458673-9kbbogk14vlgjrk14dd5rvg5085sl2qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTUm01-aUqSLcsQeSodewvIP1l0TtVhcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393714458673-9kbbogk14vlgjrk14dd5rvg5085sl2qk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
