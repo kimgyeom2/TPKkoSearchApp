@@ -17,10 +17,18 @@ import com.google.android.gms.tasks.Tasks
 import com.gy25m.tpkkosearchapp.G
 import com.gy25m.tpkkosearchapp.R
 import com.gy25m.tpkkosearchapp.databinding.ActivityLoginBinding
+import com.gy25m.tpkkosearchapp.model.NidUserInfoResponse
 import com.gy25m.tpkkosearchapp.model.UserAccount
+import com.gy25m.tpkkosearchapp.network.RetrofitApiService
+import com.gy25m.tpkkosearchapp.network.RetrofitHelper
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
@@ -120,6 +128,50 @@ class LoginActivity : AppCompatActivity() {
     })
 
     private fun clickLoginNaver(){
+        //네이버 아이디로 초기화
+        NaverIdLoginSDK.initialize(this,"za5X8b9JhYqLdO91Olyu","T4HVMoVz3F","찾아줘 장소")
 
+        //네이버 로그인
+        NaverIdLoginSDK.authenticate(this,object :OAuthLoginCallback{
+            override fun onError(errorCode: Int, message: String) {
+                Toast.makeText(this@LoginActivity, "error : $message", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onFailure(httpStatus: Int, message: String) {
+                Toast.makeText(this@LoginActivity, "로그인 실패 : $message", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onSuccess() {
+                Toast.makeText(this@LoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
+
+                // 사용자 정보를 가져오는 REST API를 작업할때 접속토큰 필요함
+                val accessToken:String? = NaverIdLoginSDK.getAccessToken()
+                // 토큰값 확인
+                Log.i("token",accessToken!!)
+
+                // 레트로핏으로 사용자 정보API 가져오기
+                val retrofit=RetrofitHelper.getRetrofitInstance("https://openapi.naver.com")
+                retrofit.create(RetrofitApiService::class.java).getNidUserInfo("Bearer $accessToken").enqueue(object :Callback<NidUserInfoResponse>{
+                    override fun onResponse(
+                        call: Call<NidUserInfoResponse>,
+                        response: Response<NidUserInfoResponse>
+                    ) {
+                        val userInfoResponse:NidUserInfoResponse?=response.body()
+                        val id:String=userInfoResponse?.response?.id ?: ""
+                        val email:String=userInfoResponse?.response?.email ?: ""
+                        Toast.makeText(this@LoginActivity, "$email", Toast.LENGTH_SHORT).show()
+                        G.userInfo= UserAccount(id,email)
+                        
+                        //main으로 이동
+                        startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+                        finish()
+                    }
+
+                    override fun onFailure(call: Call<NidUserInfoResponse>, t: Throwable) {
+                        Toast.makeText(this@LoginActivity, "회원정보 불러오기 실패", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        })
     }
 }
