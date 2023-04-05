@@ -27,6 +27,13 @@ import com.gy25m.tpkkosearchapp.R
 import com.gy25m.tpkkosearchapp.databinding.ActivityMainBinding
 import com.gy25m.tpkkosearchapp.fragments.PlaceListFragment
 import com.gy25m.tpkkosearchapp.fragments.PlaceMapFragment
+import com.gy25m.tpkkosearchapp.model.KakaoSearchPlaceResponse
+import com.gy25m.tpkkosearchapp.network.RetrofitApiService
+import com.gy25m.tpkkosearchapp.network.RetrofitHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 class MainActivity : AppCompatActivity() {
     val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -40,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     // [ Google Fused Location API 사용 : play-services-location ]
     val providerClient:FusedLocationProviderClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
+    // 검색결과 응답 객체 참조변수
+    var searchPlaceResponse:KakaoSearchPlaceResponse?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -130,7 +139,25 @@ class MainActivity : AppCompatActivity() {
 
     // 카카오 장소검색 API를 파싱하는 작업메소드
     private fun searchPlace(){
-        Toast.makeText(this, "$searchQuery - ${myLocation?.latitude} , ${myLocation?.longitude}", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, "$searchQuery - ${myLocation?.latitude} , ${myLocation?.longitude}", Toast.LENGTH_SHORT).show()
+        // Kakao keyword place search api.. Rest API작업 - Retrofit
+        val retrofit:Retrofit=RetrofitHelper.getRetrofitInstance("https://dapi.kakao.com")
+        val retrofitApiservice=retrofit.create(RetrofitApiService::class.java)
+        retrofitApiservice.searchplace(searchQuery,myLocation?.latitude.toString(),myLocation?.longitude.toString()).enqueue(object : Callback<KakaoSearchPlaceResponse>{
+            override fun onResponse(
+                call: Call<KakaoSearchPlaceResponse>,
+                response: Response<KakaoSearchPlaceResponse>
+            ) {
+                searchPlaceResponse=response.body()
+                Toast.makeText(this@MainActivity, "${searchPlaceResponse?.meta?.total_count}", Toast.LENGTH_SHORT).show()
+                
+            }
+
+            override fun onFailure(call: Call<KakaoSearchPlaceResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "서버문제가 있습니다", Toast.LENGTH_SHORT).show()
+            }
+        })
+        
     }
 
     // 특정키워드 검색 단축 버튼들리스너 처리
