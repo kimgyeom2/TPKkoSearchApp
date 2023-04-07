@@ -94,6 +94,8 @@ class MainActivity : AppCompatActivity() {
             // 내 위치 요청
             requestMyLocation()
         }
+        binding.ivMyLocation.setOnClickListener { requestMyLocation() }
+
     }//onCreate method..
 
     // 퍼미션 요청 대행사 계약 및 등록
@@ -149,8 +151,12 @@ class MainActivity : AppCompatActivity() {
                 response: Response<KakaoSearchPlaceResponse>
             ) {
                 searchPlaceResponse=response.body()
-                Toast.makeText(this@MainActivity, "${searchPlaceResponse?.meta?.total_count}", Toast.LENGTH_SHORT).show()
-                
+                //Toast.makeText(this@MainActivity, "${searchPlaceResponse?.meta?.total_count}", Toast.LENGTH_SHORT).show()
+
+                // 검색이 완료가 되면 무조건 ListFragment 부터 보여주기
+                supportFragmentManager.beginTransaction().replace(R.id.container_fragment,PlaceListFragment()).commit()
+                // 탭버튼의 위치를 listFragment로 변경
+                binding.tabLayout.getTabAt(0)?.select()
             }
 
             override fun onFailure(call: Call<KakaoSearchPlaceResponse>, t: Throwable) {
@@ -222,8 +228,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when(item.itemId){
-            R.id.menu_aa-> Toast.makeText(this, "aa", Toast.LENGTH_SHORT).show()
-            R.id.menu_bb-> Toast.makeText(this, "bb", Toast.LENGTH_SHORT).show()
+            R.id.menu_aa-> Toast.makeText(this, "검색장소를 눌러주세요", Toast.LENGTH_SHORT).show()
+            R.id.menu_bb-> Toast.makeText(this, "Retrofit, Glide, Kakao API,Naver API,Google API,Gson", Toast.LENGTH_SHORT).show()
         }
 
         return super.onOptionsItemSelected(item)
