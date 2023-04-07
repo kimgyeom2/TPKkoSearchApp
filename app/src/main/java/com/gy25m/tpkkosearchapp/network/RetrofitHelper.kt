@@ -7,12 +7,12 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 class RetrofitHelper {
     companion object{
         fun getRetrofitInstance(baseUrl:String):Retrofit{
-            val retrofit:Retrofit=Retrofit.Builder()
-                                    .baseUrl(baseUrl)
-                                    .addConverterFactory(ScalarsConverterFactory.create())
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build()
-                return retrofit
+            val retrofit:Retrofit= Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            return retrofit
         }
     }
 }
