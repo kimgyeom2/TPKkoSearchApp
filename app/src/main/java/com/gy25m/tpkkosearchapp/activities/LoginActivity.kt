@@ -63,7 +63,6 @@ class LoginActivity : AppCompatActivity() {
         Log.i("keyHash",Utility.getKeyHash(this).toString())
     }//oncreate
     private fun clickLoginKakao(){
-
         // 카카오 로그인의 공통 콜백 함수
         val callback:(OAuthToken?,Throwable?)->Unit={token,error->
             if (token!=null){
